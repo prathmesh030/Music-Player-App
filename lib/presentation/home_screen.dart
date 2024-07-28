@@ -105,7 +105,9 @@ class HomeConsumer extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return const PlayingNowScreen();
+                                  return PlayingNowScreen(
+                                    audioIndex: i,
+                                  );
                                 }));
                               },
                             );
@@ -144,7 +146,9 @@ class HomeConsumer extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return const PlayingNowScreen();
+                                  return PlayingNowScreen(
+                                    audioIndex: i,
+                                  );
                                 }));
                               },
                             );
@@ -158,17 +162,17 @@ class HomeConsumer extends StatelessWidget {
                     ],
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  child: CurrentPlayingAudioTile(
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const PlayingNowScreen();
-                      }));
-                    },
-                  ),
-                )
+                // Positioned(
+                //   bottom: 0,
+                //   child: CurrentPlayingAudioTile(
+                //     onTap: () {
+                //       Navigator.of(context)
+                //           .push(MaterialPageRoute(builder: (context) {
+                //         return const PlayingNowScreen();
+                //       }));
+                //     },
+                //   ),
+                // )
               ],
             ));
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 import 'domain/core/configs/app_config.dart';
@@ -32,7 +33,9 @@ Future appInitializer(AppConfig appConfig) async {
   ]);
 
   AppStateNotifier appStateNotifier = AppStateNotifier(
+    audioPlayer: AudioPlayer(),
     isAuthorized: true,
+    favs: []
   );
 
   final AppConfig configuredApp = AppConfig(

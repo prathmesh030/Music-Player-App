@@ -11,15 +11,20 @@ class PlayingNowState with _$PlayingNowState {
     required bool showPassword,
     required int currentPageIndex,
     required String errorMessage,
-    required AudioPlayer audioPlayer,
+    required PageController pageController,
+    required AppStateNotifier appStateNotifier,
     AudioDto? currentAudio,
   }) = _PlayingNowState;
-  factory PlayingNowState.initial() => PlayingNowState(
+  factory PlayingNowState.initial({
+    required AppStateNotifier appStateNotifier,
+    required int index
+  }) => PlayingNowState(
         errorMessage: '',
         noUse: false,
-        audioPlayer: AudioPlayer(),
-        currentPageIndex: 0,
-        currentAudio: SeedAudiosDB.audios[0],
+        pageController: PageController(initialPage: index, viewportFraction: 0.8),
+        currentPageIndex: index,
+        appStateNotifier: appStateNotifier,
+        currentAudio: SeedAudiosDB.audios[index],
         isFailed: false,
         isLoading: false,
         isSuccess: false,

@@ -6,6 +6,7 @@ part 'audio_dto.g.dart';
 @freezed
 class AudioDto with _$AudioDto {
   factory AudioDto({
+   required String id,
     String? imageUrl,
     String? title,
     String? artistName,

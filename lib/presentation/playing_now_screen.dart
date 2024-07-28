@@ -3,19 +3,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../application/playing_now/playing_now_cubit.dart';
+import '../domain/core/configs/app_config.dart';
 import '../domain/core/helpers/generic_helpers.dart';
 import '../domain/core/helpers/seed_audios_db.dart';
 
 class PlayingNowScreen extends StatelessWidget {
-  const PlayingNowScreen({super.key});
+  final int audioIndex;
+  const PlayingNowScreen({
+    super.key,
+    required this.audioIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final appStateNotifier = Provider.of<AppStateNotifier>(context);
     return BlocProvider(
-      create: (context) => PlayingNowCubit(PlayingNowState.initial())..init(),
+      create: (context) => PlayingNowCubit(PlayingNowState.initial(
+        appStateNotifier: appStateNotifier,
+        index: audioIndex,
+      ))
+        ..init(),
       child: const PlayingNowConsumer(),
     );
   }
@@ -66,7 +77,7 @@ class PlayingNowConsumer extends StatelessWidget {
                           index: i, audioDto: SeedAudiosDB.audios[i]);
                     },
                     scrollDirection: Axis.horizontal,
-                    controller: PageController(viewportFraction: 0.8),
+                    controller: state.pageController,
                     itemBuilder: (context, i) {
                       final audio = SeedAudiosDB.audios[i];
                       return Container(
@@ -121,9 +132,23 @@ class PlayingNowConsumer extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SvgPicture.asset(
-                            'assets/svgs/heart.svg',
-                            width: 5.w,
+                          GestureDetector(
+                            onTap: () {
+                              context.read<PlayingNowCubit>().toggleFav();
+                            },
+                            child: SvgPicture.asset(
+                              'assets/svgs/heart.svg',
+                              width: 5.w,
+                              // ignore: deprecated_member_use
+                              color: Provider.of<AppStateNotifier>(context)
+                                          .favs
+                                          .indexWhere((el) =>
+                                              el.id ==
+                                              state.currentAudio!.id) !=
+                                      -1
+                                  ? Colors.red
+                                  : null,
+                            ),
                           )
                         ],
                       ),
@@ -161,12 +186,13 @@ class PlayingNowConsumer extends StatelessWidget {
                   height: 5.h,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       StreamBuilder<Duration>(
-                          stream: state.audioPlayer.positionStream,
+                          stream:
+                              state.appStateNotifier.audioPlayer.positionStream,
                           builder: (context, snapshot) {
                             final duration = snapshot.data;
 
@@ -184,13 +210,17 @@ class PlayingNowConsumer extends StatelessWidget {
                             );
                           }),
                       StreamBuilder<Duration>(
-                          stream: state.audioPlayer.positionStream,
+                          stream:
+                              state.appStateNotifier.audioPlayer.positionStream,
                           builder: (context, snapshot) {
                             return Text(
-                              state.audioPlayer.duration != null
-                                  ? GenericHelpers.getDurationFormat(
-                                      state.audioPlayer.duration ??
-                                          Duration.zero)
+                              state.appStateNotifier.audioPlayer.duration !=
+                                      null
+                                  ? GenericHelpers.getDurationFormat(state
+                                          .appStateNotifier
+                                          .audioPlayer
+                                          .duration ??
+                                      Duration.zero)
                                   : '',
                               style: Theme.of(context)
                                   .textTheme
@@ -208,23 +238,29 @@ class PlayingNowConsumer extends StatelessWidget {
                   height: 5.h,
                 ),
                 StreamBuilder<Duration?>(
-                  stream: state.audioPlayer.positionStream,
+                  stream: state.appStateNotifier.audioPlayer.positionStream,
                   builder: (context, snapshot) {
                     final durationState = snapshot.data;
                     final progress = durationState ?? Duration.zero;
-                    final buffered = state.audioPlayer.bufferedPosition;
-                    final total = state.audioPlayer.duration ?? Duration.zero;
-                    return ProgressBar(
-                      bufferedBarColor: Colors.red,
-                      thumbColor: Colors.blue,
-                      baseBarColor: Colors.green,
-                      progressBarColor: Colors.white,
-                      progress: progress,
-                      buffered: buffered,
-                      total: total,
-                      onSeek: (duration) {
-                        context.read<PlayingNowCubit>().jumpToAudio(duration);
-                      },
+                    final buffered =
+                        state.appStateNotifier.audioPlayer.bufferedPosition;
+                    final total = state.appStateNotifier.audioPlayer.duration ??
+                        Duration.zero;
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6.w),
+                      child: ProgressBar(
+                        bufferedBarColor: Colors.white.withOpacity(0.5),
+                        thumbColor: Colors.white,
+                        thumbGlowRadius: 15,
+                        baseBarColor: Colors.white.withOpacity(0.3),
+                        progressBarColor: Colors.white,
+                        progress: progress,
+                        buffered: buffered,
+                        total: total,
+                        onSeek: (duration) {
+                          context.read<PlayingNowCubit>().jumpToAudio(duration);
+                        },
+                      ),
                     );
                   },
                 ),
@@ -232,26 +268,45 @@ class PlayingNowConsumer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/svgs/prev.svg',
-                      width: 8.w,
+                    GestureDetector(
+                      onTap: () {
+                        final prevI = state.currentPageIndex > 0
+                            ? state.currentPageIndex - 1
+                            : SeedAudiosDB.audios.length - 1;
+                        state.pageController.animateToPage(
+                          prevI,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svgs/prev.svg',
+                        width: 8.w,
+                      ),
                     ),
                     SizedBox(
                       width: 8.w,
                     ),
                     StreamBuilder<PlayerState>(
-                        stream: state.audioPlayer.playerStateStream,
+                        stream: state
+                            .appStateNotifier.audioPlayer.playerStateStream,
                         builder: (context, snapshot) {
                           final playerState = snapshot.data;
                           final processingState = playerState?.processingState;
                           final playing = playerState?.playing;
                           if (processingState == ProcessingState.loading ||
-                              processingState == ProcessingState.buffering) {
+                              processingState == ProcessingState.buffering ||
+                              processingState == ProcessingState.idle) {
                             return Container(
                               margin: const EdgeInsets.all(8.0),
                               width: 64.0,
                               height: 64.0,
-                              child: const CircularProgressIndicator(),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 2.w, vertical: 1.h),
+                                child: CircularProgressIndicator(
+                                    color: Colors.white.withOpacity(0.3)),
+                              ),
                             );
                           } else if (playing != true) {
                             return IconButton(
@@ -278,7 +333,10 @@ class PlayingNowConsumer extends StatelessWidget {
                             );
                           } else {
                             return IconButton(
-                              icon: const Icon(Icons.replay),
+                              icon: Icon(
+                                Icons.replay,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                               iconSize: 64.0,
                               onPressed: () {
                                 context
@@ -291,9 +349,22 @@ class PlayingNowConsumer extends StatelessWidget {
                     SizedBox(
                       width: 8.w,
                     ),
-                    SvgPicture.asset(
-                      'assets/svgs/next.svg',
-                      width: 8.w,
+                    GestureDetector(
+                      onTap: () {
+                        final nextI = state.currentPageIndex <
+                                SeedAudiosDB.audios.length - 1
+                            ? state.currentPageIndex + 1
+                            : 0;
+                        state.pageController.animateToPage(
+                          nextI,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svgs/next.svg',
+                        width: 8.w,
+                      ),
                     ),
                   ],
                 ),

@@ -23,7 +23,8 @@ mixin _$PlayingNowState {
   bool get showPassword => throw _privateConstructorUsedError;
   int get currentPageIndex => throw _privateConstructorUsedError;
   String get errorMessage => throw _privateConstructorUsedError;
-  AudioPlayer get audioPlayer => throw _privateConstructorUsedError;
+  PageController get pageController => throw _privateConstructorUsedError;
+  AppStateNotifier get appStateNotifier => throw _privateConstructorUsedError;
   AudioDto? get currentAudio => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $PlayingNowStateCopyWith<$Res> {
       bool showPassword,
       int currentPageIndex,
       String errorMessage,
-      AudioPlayer audioPlayer,
+      PageController pageController,
+      AppStateNotifier appStateNotifier,
       AudioDto? currentAudio});
 
   $AudioDtoCopyWith<$Res>? get currentAudio;
@@ -71,7 +73,8 @@ class _$PlayingNowStateCopyWithImpl<$Res, $Val extends PlayingNowState>
     Object? showPassword = null,
     Object? currentPageIndex = null,
     Object? errorMessage = null,
-    Object? audioPlayer = null,
+    Object? pageController = null,
+    Object? appStateNotifier = null,
     Object? currentAudio = freezed,
   }) {
     return _then(_value.copyWith(
@@ -103,10 +106,14 @@ class _$PlayingNowStateCopyWithImpl<$Res, $Val extends PlayingNowState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      audioPlayer: null == audioPlayer
-          ? _value.audioPlayer
-          : audioPlayer // ignore: cast_nullable_to_non_nullable
-              as AudioPlayer,
+      pageController: null == pageController
+          ? _value.pageController
+          : pageController // ignore: cast_nullable_to_non_nullable
+              as PageController,
+      appStateNotifier: null == appStateNotifier
+          ? _value.appStateNotifier
+          : appStateNotifier // ignore: cast_nullable_to_non_nullable
+              as AppStateNotifier,
       currentAudio: freezed == currentAudio
           ? _value.currentAudio
           : currentAudio // ignore: cast_nullable_to_non_nullable
@@ -143,7 +150,8 @@ abstract class _$$PlayingNowStateImplCopyWith<$Res>
       bool showPassword,
       int currentPageIndex,
       String errorMessage,
-      AudioPlayer audioPlayer,
+      PageController pageController,
+      AppStateNotifier appStateNotifier,
       AudioDto? currentAudio});
 
   @override
@@ -168,7 +176,8 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
     Object? showPassword = null,
     Object? currentPageIndex = null,
     Object? errorMessage = null,
-    Object? audioPlayer = null,
+    Object? pageController = null,
+    Object? appStateNotifier = null,
     Object? currentAudio = freezed,
   }) {
     return _then(_$PlayingNowStateImpl(
@@ -200,10 +209,14 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      audioPlayer: null == audioPlayer
-          ? _value.audioPlayer
-          : audioPlayer // ignore: cast_nullable_to_non_nullable
-              as AudioPlayer,
+      pageController: null == pageController
+          ? _value.pageController
+          : pageController // ignore: cast_nullable_to_non_nullable
+              as PageController,
+      appStateNotifier: null == appStateNotifier
+          ? _value.appStateNotifier
+          : appStateNotifier // ignore: cast_nullable_to_non_nullable
+              as AppStateNotifier,
       currentAudio: freezed == currentAudio
           ? _value.currentAudio
           : currentAudio // ignore: cast_nullable_to_non_nullable
@@ -214,7 +227,9 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$PlayingNowStateImpl implements _PlayingNowState {
+class _$PlayingNowStateImpl
+    with DiagnosticableTreeMixin
+    implements _PlayingNowState {
   const _$PlayingNowStateImpl(
       {required this.isLoading,
       required this.isFailed,
@@ -223,7 +238,8 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
       required this.showPassword,
       required this.currentPageIndex,
       required this.errorMessage,
-      required this.audioPlayer,
+      required this.pageController,
+      required this.appStateNotifier,
       this.currentAudio});
 
   @override
@@ -241,13 +257,32 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
   @override
   final String errorMessage;
   @override
-  final AudioPlayer audioPlayer;
+  final PageController pageController;
+  @override
+  final AppStateNotifier appStateNotifier;
   @override
   final AudioDto? currentAudio;
 
   @override
-  String toString() {
-    return 'PlayingNowState(isLoading: $isLoading, isFailed: $isFailed, isSuccess: $isSuccess, noUse: $noUse, showPassword: $showPassword, currentPageIndex: $currentPageIndex, errorMessage: $errorMessage, audioPlayer: $audioPlayer, currentAudio: $currentAudio)';
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PlayingNowState(isLoading: $isLoading, isFailed: $isFailed, isSuccess: $isSuccess, noUse: $noUse, showPassword: $showPassword, currentPageIndex: $currentPageIndex, errorMessage: $errorMessage, pageController: $pageController, appStateNotifier: $appStateNotifier, currentAudio: $currentAudio)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PlayingNowState'))
+      ..add(DiagnosticsProperty('isLoading', isLoading))
+      ..add(DiagnosticsProperty('isFailed', isFailed))
+      ..add(DiagnosticsProperty('isSuccess', isSuccess))
+      ..add(DiagnosticsProperty('noUse', noUse))
+      ..add(DiagnosticsProperty('showPassword', showPassword))
+      ..add(DiagnosticsProperty('currentPageIndex', currentPageIndex))
+      ..add(DiagnosticsProperty('errorMessage', errorMessage))
+      ..add(DiagnosticsProperty('pageController', pageController))
+      ..add(DiagnosticsProperty('appStateNotifier', appStateNotifier))
+      ..add(DiagnosticsProperty('currentAudio', currentAudio));
   }
 
   @override
@@ -268,8 +303,10 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
                 other.currentPageIndex == currentPageIndex) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
-            (identical(other.audioPlayer, audioPlayer) ||
-                other.audioPlayer == audioPlayer) &&
+            (identical(other.pageController, pageController) ||
+                other.pageController == pageController) &&
+            (identical(other.appStateNotifier, appStateNotifier) ||
+                other.appStateNotifier == appStateNotifier) &&
             (identical(other.currentAudio, currentAudio) ||
                 other.currentAudio == currentAudio));
   }
@@ -284,7 +321,8 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
       showPassword,
       currentPageIndex,
       errorMessage,
-      audioPlayer,
+      pageController,
+      appStateNotifier,
       currentAudio);
 
   @JsonKey(ignore: true)
@@ -304,7 +342,8 @@ abstract class _PlayingNowState implements PlayingNowState {
       required final bool showPassword,
       required final int currentPageIndex,
       required final String errorMessage,
-      required final AudioPlayer audioPlayer,
+      required final PageController pageController,
+      required final AppStateNotifier appStateNotifier,
       final AudioDto? currentAudio}) = _$PlayingNowStateImpl;
 
   @override
@@ -322,7 +361,9 @@ abstract class _PlayingNowState implements PlayingNowState {
   @override
   String get errorMessage;
   @override
-  AudioPlayer get audioPlayer;
+  PageController get pageController;
+  @override
+  AppStateNotifier get appStateNotifier;
   @override
   AudioDto? get currentAudio;
   @override

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../application/liked_songs/liked_songs_cubit.dart';
+import '../domain/core/configs/app_config.dart';
 import '../domain/core/helpers/seed_audios_db.dart';
 import '../infrastructure/dtos/audio_dto/audio_dto.dart';
 import 'playing_now_screen.dart';
@@ -64,36 +66,42 @@ class LikedSongsConsumer extends StatelessWidget {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              childAspectRatio: 0.1.h,
+                              childAspectRatio: 0.75,
                               mainAxisSpacing: 3.5.h,
                               crossAxisSpacing: 5.w,
                             ),
-                            itemCount: SeedAudiosDB.audios.length,
+                            itemCount: Provider.of<AppStateNotifier>(context)
+                                .favs
+                                .length,
                             itemBuilder: (c, i) {
-                              final audio = SeedAudiosDB.audios[i];
+                              final audio =
+                                  Provider.of<AppStateNotifier>(context)
+                                      .favs[i];
                               return LikedSongCard(
                                 audio: audio,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return const PlayingNowScreen();
+                                    return PlayingNowScreen(
+                                      audioIndex: i,
+                                    );
                                   }));
                                 },
                               );
                             })),
                   ],
                 )),
-            Positioned(
-              bottom: 0,
-              child: CurrentPlayingAudioTile(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return const PlayingNowScreen();
-                  }));
-                },
-              ),
-            )
+            // Positioned(
+            //   bottom: 0,
+            //   child: CurrentPlayingAudioTile(
+            //     onTap: () {
+            //       Navigator.of(context)
+            //           .push(MaterialPageRoute(builder: (context) {
+            //         return const PlayingNowScreen(audioIndex: ,);
+            //       }));
+            //     },
+            //   ),
+            // )
           ],
         );
       },

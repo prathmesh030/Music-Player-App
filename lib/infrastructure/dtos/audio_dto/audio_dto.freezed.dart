@@ -20,6 +20,7 @@ AudioDto _$AudioDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AudioDto {
+  String get id => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   String? get artistName => throw _privateConstructorUsedError;
@@ -38,7 +39,8 @@ abstract class $AudioDtoCopyWith<$Res> {
       _$AudioDtoCopyWithImpl<$Res, AudioDto>;
   @useResult
   $Res call(
-      {String? imageUrl,
+      {String id,
+      String? imageUrl,
       String? title,
       String? artistName,
       String? audioUrl,
@@ -58,6 +60,7 @@ class _$AudioDtoCopyWithImpl<$Res, $Val extends AudioDto>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? imageUrl = freezed,
     Object? title = freezed,
     Object? artistName = freezed,
@@ -65,6 +68,10 @@ class _$AudioDtoCopyWithImpl<$Res, $Val extends AudioDto>
     Object? isLiked = freezed,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -98,7 +105,8 @@ abstract class _$$AudioDtoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? imageUrl,
+      {String id,
+      String? imageUrl,
       String? title,
       String? artistName,
       String? audioUrl,
@@ -116,6 +124,7 @@ class __$$AudioDtoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? imageUrl = freezed,
     Object? title = freezed,
     Object? artistName = freezed,
@@ -123,6 +132,10 @@ class __$$AudioDtoImplCopyWithImpl<$Res>
     Object? isLiked = freezed,
   }) {
     return _then(_$AudioDtoImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -151,7 +164,8 @@ class __$$AudioDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AudioDtoImpl implements _AudioDto {
   _$AudioDtoImpl(
-      {this.imageUrl,
+      {required this.id,
+      this.imageUrl,
       this.title,
       this.artistName,
       this.audioUrl,
@@ -160,6 +174,8 @@ class _$AudioDtoImpl implements _AudioDto {
   factory _$AudioDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$AudioDtoImplFromJson(json);
 
+  @override
+  final String id;
   @override
   final String? imageUrl;
   @override
@@ -173,7 +189,7 @@ class _$AudioDtoImpl implements _AudioDto {
 
   @override
   String toString() {
-    return 'AudioDto(imageUrl: $imageUrl, title: $title, artistName: $artistName, audioUrl: $audioUrl, isLiked: $isLiked)';
+    return 'AudioDto(id: $id, imageUrl: $imageUrl, title: $title, artistName: $artistName, audioUrl: $audioUrl, isLiked: $isLiked)';
   }
 
   @override
@@ -181,6 +197,7 @@ class _$AudioDtoImpl implements _AudioDto {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AudioDtoImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.title, title) || other.title == title) &&
@@ -193,8 +210,8 @@ class _$AudioDtoImpl implements _AudioDto {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, imageUrl, title, artistName, audioUrl, isLiked);
+  int get hashCode => Object.hash(
+      runtimeType, id, imageUrl, title, artistName, audioUrl, isLiked);
 
   @JsonKey(ignore: true)
   @override
@@ -212,7 +229,8 @@ class _$AudioDtoImpl implements _AudioDto {
 
 abstract class _AudioDto implements AudioDto {
   factory _AudioDto(
-      {final String? imageUrl,
+      {required final String id,
+      final String? imageUrl,
       final String? title,
       final String? artistName,
       final String? audioUrl,
@@ -221,6 +239,8 @@ abstract class _AudioDto implements AudioDto {
   factory _AudioDto.fromJson(Map<String, dynamic> json) =
       _$AudioDtoImpl.fromJson;
 
+  @override
+  String get id;
   @override
   String? get imageUrl;
   @override
