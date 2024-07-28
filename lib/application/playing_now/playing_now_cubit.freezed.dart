@@ -19,9 +19,11 @@ mixin _$PlayingNowState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isFailed => throw _privateConstructorUsedError;
   bool get isSuccess => throw _privateConstructorUsedError;
+  bool get noUse => throw _privateConstructorUsedError;
   bool get showPassword => throw _privateConstructorUsedError;
   int get currentPageIndex => throw _privateConstructorUsedError;
   String get errorMessage => throw _privateConstructorUsedError;
+  AudioPlayer get audioPlayer => throw _privateConstructorUsedError;
   AudioDto? get currentAudio => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -39,9 +41,11 @@ abstract class $PlayingNowStateCopyWith<$Res> {
       {bool isLoading,
       bool isFailed,
       bool isSuccess,
+      bool noUse,
       bool showPassword,
       int currentPageIndex,
       String errorMessage,
+      AudioPlayer audioPlayer,
       AudioDto? currentAudio});
 
   $AudioDtoCopyWith<$Res>? get currentAudio;
@@ -63,9 +67,11 @@ class _$PlayingNowStateCopyWithImpl<$Res, $Val extends PlayingNowState>
     Object? isLoading = null,
     Object? isFailed = null,
     Object? isSuccess = null,
+    Object? noUse = null,
     Object? showPassword = null,
     Object? currentPageIndex = null,
     Object? errorMessage = null,
+    Object? audioPlayer = null,
     Object? currentAudio = freezed,
   }) {
     return _then(_value.copyWith(
@@ -81,6 +87,10 @@ class _$PlayingNowStateCopyWithImpl<$Res, $Val extends PlayingNowState>
           ? _value.isSuccess
           : isSuccess // ignore: cast_nullable_to_non_nullable
               as bool,
+      noUse: null == noUse
+          ? _value.noUse
+          : noUse // ignore: cast_nullable_to_non_nullable
+              as bool,
       showPassword: null == showPassword
           ? _value.showPassword
           : showPassword // ignore: cast_nullable_to_non_nullable
@@ -93,6 +103,10 @@ class _$PlayingNowStateCopyWithImpl<$Res, $Val extends PlayingNowState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String,
+      audioPlayer: null == audioPlayer
+          ? _value.audioPlayer
+          : audioPlayer // ignore: cast_nullable_to_non_nullable
+              as AudioPlayer,
       currentAudio: freezed == currentAudio
           ? _value.currentAudio
           : currentAudio // ignore: cast_nullable_to_non_nullable
@@ -125,9 +139,11 @@ abstract class _$$PlayingNowStateImplCopyWith<$Res>
       {bool isLoading,
       bool isFailed,
       bool isSuccess,
+      bool noUse,
       bool showPassword,
       int currentPageIndex,
       String errorMessage,
+      AudioPlayer audioPlayer,
       AudioDto? currentAudio});
 
   @override
@@ -148,9 +164,11 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? isFailed = null,
     Object? isSuccess = null,
+    Object? noUse = null,
     Object? showPassword = null,
     Object? currentPageIndex = null,
     Object? errorMessage = null,
+    Object? audioPlayer = null,
     Object? currentAudio = freezed,
   }) {
     return _then(_$PlayingNowStateImpl(
@@ -166,6 +184,10 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
           ? _value.isSuccess
           : isSuccess // ignore: cast_nullable_to_non_nullable
               as bool,
+      noUse: null == noUse
+          ? _value.noUse
+          : noUse // ignore: cast_nullable_to_non_nullable
+              as bool,
       showPassword: null == showPassword
           ? _value.showPassword
           : showPassword // ignore: cast_nullable_to_non_nullable
@@ -178,6 +200,10 @@ class __$$PlayingNowStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String,
+      audioPlayer: null == audioPlayer
+          ? _value.audioPlayer
+          : audioPlayer // ignore: cast_nullable_to_non_nullable
+              as AudioPlayer,
       currentAudio: freezed == currentAudio
           ? _value.currentAudio
           : currentAudio // ignore: cast_nullable_to_non_nullable
@@ -193,9 +219,11 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
       {required this.isLoading,
       required this.isFailed,
       required this.isSuccess,
+      required this.noUse,
       required this.showPassword,
       required this.currentPageIndex,
       required this.errorMessage,
+      required this.audioPlayer,
       this.currentAudio});
 
   @override
@@ -205,17 +233,21 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
   @override
   final bool isSuccess;
   @override
+  final bool noUse;
+  @override
   final bool showPassword;
   @override
   final int currentPageIndex;
   @override
   final String errorMessage;
   @override
+  final AudioPlayer audioPlayer;
+  @override
   final AudioDto? currentAudio;
 
   @override
   String toString() {
-    return 'PlayingNowState(isLoading: $isLoading, isFailed: $isFailed, isSuccess: $isSuccess, showPassword: $showPassword, currentPageIndex: $currentPageIndex, errorMessage: $errorMessage, currentAudio: $currentAudio)';
+    return 'PlayingNowState(isLoading: $isLoading, isFailed: $isFailed, isSuccess: $isSuccess, noUse: $noUse, showPassword: $showPassword, currentPageIndex: $currentPageIndex, errorMessage: $errorMessage, audioPlayer: $audioPlayer, currentAudio: $currentAudio)';
   }
 
   @override
@@ -229,19 +261,31 @@ class _$PlayingNowStateImpl implements _PlayingNowState {
                 other.isFailed == isFailed) &&
             (identical(other.isSuccess, isSuccess) ||
                 other.isSuccess == isSuccess) &&
+            (identical(other.noUse, noUse) || other.noUse == noUse) &&
             (identical(other.showPassword, showPassword) ||
                 other.showPassword == showPassword) &&
             (identical(other.currentPageIndex, currentPageIndex) ||
                 other.currentPageIndex == currentPageIndex) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
+            (identical(other.audioPlayer, audioPlayer) ||
+                other.audioPlayer == audioPlayer) &&
             (identical(other.currentAudio, currentAudio) ||
                 other.currentAudio == currentAudio));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, isFailed, isSuccess,
-      showPassword, currentPageIndex, errorMessage, currentAudio);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      isFailed,
+      isSuccess,
+      noUse,
+      showPassword,
+      currentPageIndex,
+      errorMessage,
+      audioPlayer,
+      currentAudio);
 
   @JsonKey(ignore: true)
   @override
@@ -256,9 +300,11 @@ abstract class _PlayingNowState implements PlayingNowState {
       {required final bool isLoading,
       required final bool isFailed,
       required final bool isSuccess,
+      required final bool noUse,
       required final bool showPassword,
       required final int currentPageIndex,
       required final String errorMessage,
+      required final AudioPlayer audioPlayer,
       final AudioDto? currentAudio}) = _$PlayingNowStateImpl;
 
   @override
@@ -268,11 +314,15 @@ abstract class _PlayingNowState implements PlayingNowState {
   @override
   bool get isSuccess;
   @override
+  bool get noUse;
+  @override
   bool get showPassword;
   @override
   int get currentPageIndex;
   @override
   String get errorMessage;
+  @override
+  AudioPlayer get audioPlayer;
   @override
   AudioDto? get currentAudio;
   @override

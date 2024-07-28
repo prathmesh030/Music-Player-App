@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../application/playing_now/playing_now_cubit.dart';
+import '../domain/core/helpers/generic_helpers.dart';
 import '../domain/core/helpers/seed_audios_db.dart';
 
 class PlayingNowScreen extends StatelessWidget {
@@ -12,7 +15,7 @@ class PlayingNowScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PlayingNowCubit(PlayingNowState.initial()),
+      create: (context) => PlayingNowCubit(PlayingNowState.initial())..init(),
       child: const PlayingNowConsumer(),
     );
   }
@@ -162,30 +165,68 @@ class PlayingNowConsumer extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '00:00',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: const Color(0xFFA5C0FF).withOpacity(0.7),
-                            ),
-                      ),
-                      Text(
-                        '04:00',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: const Color(0xFFA5C0FF).withOpacity(0.7),
-                            ),
-                      ),
+                      StreamBuilder<Duration>(
+                          stream: state.audioPlayer.positionStream,
+                          builder: (context, snapshot) {
+                            final duration = snapshot.data;
+
+                            return Text(
+                              duration != null
+                                  ? GenericHelpers.getDurationFormat(duration)
+                                  : '00:00',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    color: const Color(0xFFA5C0FF)
+                                        .withOpacity(0.7),
+                                  ),
+                            );
+                          }),
+                      StreamBuilder<Duration>(
+                          stream: state.audioPlayer.positionStream,
+                          builder: (context, snapshot) {
+                            return Text(
+                              state.audioPlayer.duration != null
+                                  ? GenericHelpers.getDurationFormat(
+                                      state.audioPlayer.duration ??
+                                          Duration.zero)
+                                  : '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    color: const Color(0xFFA5C0FF)
+                                        .withOpacity(0.7),
+                                  ),
+                            );
+                          }),
                     ],
                   ),
                 ),
                 SizedBox(
                   height: 5.h,
                 ),
-                Container(
-                  width: 100.w,
-                  height: 0.5.h,
-                  margin: EdgeInsets.symmetric(horizontal: 4.w),
-                  decoration: BoxDecoration(
-                      color: const Color(0xffFAFAFA).withOpacity(0.3)),
+                StreamBuilder<Duration?>(
+                  stream: state.audioPlayer.positionStream,
+                  builder: (context, snapshot) {
+                    final durationState = snapshot.data;
+                    final progress = durationState ?? Duration.zero;
+                    final buffered = state.audioPlayer.bufferedPosition;
+                    final total = state.audioPlayer.duration ?? Duration.zero;
+                    return ProgressBar(
+                      bufferedBarColor: Colors.red,
+                      thumbColor: Colors.blue,
+                      baseBarColor: Colors.green,
+                      progressBarColor: Colors.white,
+                      progress: progress,
+                      buffered: buffered,
+                      total: total,
+                      onSeek: (duration) {
+                        context.read<PlayingNowCubit>().jumpToAudio(duration);
+                      },
+                    );
+                  },
                 ),
                 const Expanded(child: SizedBox()),
                 Row(
@@ -198,12 +239,55 @@ class PlayingNowConsumer extends StatelessWidget {
                     SizedBox(
                       width: 8.w,
                     ),
-                    SvgPicture.asset(
-                      (1 == 1)
-                          ? 'assets/svgs/pause.svg'
-                          : 'assets/svgs/play.svg',
-                      width: (1 == 1) ? 10.w : 8.w,
-                    ),
+                    StreamBuilder<PlayerState>(
+                        stream: state.audioPlayer.playerStateStream,
+                        builder: (context, snapshot) {
+                          final playerState = snapshot.data;
+                          final processingState = playerState?.processingState;
+                          final playing = playerState?.playing;
+                          if (processingState == ProcessingState.loading ||
+                              processingState == ProcessingState.buffering) {
+                            return Container(
+                              margin: const EdgeInsets.all(8.0),
+                              width: 64.0,
+                              height: 64.0,
+                              child: const CircularProgressIndicator(),
+                            );
+                          } else if (playing != true) {
+                            return IconButton(
+                              icon: Icon(
+                                Icons.play_arrow,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              iconSize: 64.0,
+                              onPressed: () {
+                                context.read<PlayingNowCubit>().playAudio();
+                              },
+                            );
+                          } else if (processingState !=
+                              ProcessingState.completed) {
+                            return IconButton(
+                              icon: Icon(
+                                Icons.pause,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              iconSize: 64.0,
+                              onPressed: () {
+                                context.read<PlayingNowCubit>().pauseAudio();
+                              },
+                            );
+                          } else {
+                            return IconButton(
+                              icon: const Icon(Icons.replay),
+                              iconSize: 64.0,
+                              onPressed: () {
+                                context
+                                    .read<PlayingNowCubit>()
+                                    .jumpToAudio(Duration.zero);
+                              },
+                            );
+                          }
+                        }),
                     SizedBox(
                       width: 8.w,
                     ),
